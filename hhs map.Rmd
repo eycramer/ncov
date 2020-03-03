@@ -1,0 +1,65 @@
+---
+title: "HHS regional map"
+author: "Estee Y Cramer"
+date: "3/2/2020"
+output: html_document
+---
+
+#Load Libraries
+```{r}
+library(ggthemes)
+library(maps)
+library(tidyverse)
+```
+
+
+
+```{r}
+us_states <- map_data("state")
+```
+
+
+#hhs region data 
+```{r}
+us_states_update <- us_states %>%
+  mutate(hhs_region = case_when(
+    region %in% c("connecticut", "maine", "massachusetts", "new hampshire", "rhode island", "vermont") ~ "hhs1", 
+    region %in% c("new jersey", "new york") ~ "hhs2", 
+    region %in% c("delaware", "district of columbia", "maryland", "pennsylvania", "virginia", "west virginia") ~ "hhs3", 
+    region %in% c("alabama", "florida", "georgia", "kentucky", "mississippi", "north carolina", "south carolina", "tennessee") ~ "hhs4", 
+    region %in% c("illinois", "indiana","michigan", "minnesota", "ohio", "wisconsin") ~ "hhs5",
+    region %in% c("arkansas", "louisiana", "new mexico", "oklahoma", "texas") ~ "hhs6", 
+    region %in% c("iowa", "kansas","missouri", "nebraska") ~ "hhs7", 
+    region %in% c("colorado", "montana", "north dakota","south dakota", "utah", "wyoming") ~ "hhs8", 
+    region %in% c("arizona","california", "hawaii", "nevada") ~ "hhs9",
+    region %in% c("seattle", "alaska", "idaho", "oregon", "washington") ~ "hhs10")) %>%
+  mutate(hhs_region = as.factor(hhs_region)) 
+```
+
+
+
+```{r}
+
+CDCcolors <- c("#5B7781", "#DA9D9C","#653C17", "#B2741B",  "#DCD744",   "#689A61",  "#E38F45",  "#518FAB",  "#A59070",  "#A0CCDC")
+
+  
+ggplot(us_states_update, mapping = aes(x = long, y = lat, group = group, fill = hhs_region)) + geom_polygon(color = "gray90", size = .1) +
+  guides(fill = FALSE) +
+  annotate(geom="text", x=-70, y= 45, label="1", color="white", size = 9) +
+  annotate(geom="text", x=-74.5, y= 43, label="2", color="white", size = 9) +
+  annotate(geom="text", x=-78, y= 40.5, label="3", color="white", size = 9) +
+  annotate(geom="text", x=-85, y= 34, label="4", color="white", size = 9) + 
+  annotate(geom="text", x=-88, y= 40.5, label="5", color="white", size = 9) + 
+  annotate(geom="text", x=-98, y= 32.8, label="6", color="white", size = 9) +
+  annotate(geom="text", x=-97.5, y= 40, label="7", color="white", size = 9) + 
+  annotate(geom="text", x=-105, y= 46, label="8", color="white", size = 9) + 
+  annotate(geom="text", x=-117.5, y= 39.5, label="9", color="white", size = 9) + 
+  annotate(geom="text", x=-120, y= 45, label="10", color="white", size = 9) +
+  scale_fill_manual(values=CDCcolors) +
+  ggtitle("US Department of Health and Human Services \n  Regions") +
+  theme_map()+
+  theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 16))
+
+
+```
+
